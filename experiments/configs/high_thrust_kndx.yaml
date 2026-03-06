@@ -1,0 +1,29 @@
+experiment_name: high_thrust_kndx
+
+constraints:
+  target_mass_kg: 0.1
+  max_pressure_Pa: 4826330 # 700 psi
+  max_mass_flux: 500
+  grain_od_m: 0.035
+  total_grains: 4
+  mode: fast
+
+propellant:
+  name: "KNDX"
+  density: 1879.0
+  tabs:
+    - minPressure: 100000
+      maxPressure: 10300000
+      a: 0.000001713
+      n: 0.619
+      k: 1.1308
+      t: 1710.0
+      m: 42.39
+
+optimizer:
+  type: montecarlo
+  samples: 5000
+  gpu_batch_size: 1024
+
+objective:
+  maximize: peak_thrust
