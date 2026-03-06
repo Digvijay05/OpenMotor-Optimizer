@@ -1,4 +1,4 @@
-<![CDATA[# 🚀 OpenMotor-Optimizer
+# 🚀 OpenMotor-Optimizer
 
 **Physics-guided optimization of solid rocket motors with OpenMotor integration and GPU-accelerated search.**
 
@@ -45,7 +45,7 @@ constraints → physics-guided generator → GPU filtering → OpenMotor simulat
 |---------|-------------|
 | **Decoupled Physics Engine** | Interacts cleanly with OpenMotor through adapter layers, without reimplementing core physics equations. |
 | **GPU-Accelerated Pre-Filtering** | Leverages PyTorch tensors to batch-evaluate millions of candidate geometries on GPU before sending survivors to physical simulation. |
-| **Physics-Guided Search** | Uses Kn (Klemmung) rules-of-thumb and mass conservation to derive intelligent search bounds rather than naïve random sampling. |
+| **Physics-Guided Search** | Uses Kn (Klemmung) rules-of-thumb and mass conservation to derive intelligent search bounds rather than naive random sampling. |
 | **3 Optimization Strategies** | Monte Carlo (GPU), Genetic Algorithm, and Bayesian (Optuna) optimizers, configurable per experiment. |
 | **Multiple Grain Geometries** | Supports BATES, Finocyl, and Star grain profiles with full parameterization. |
 | **Persistent Experiment Tracking** | Organizes configs, run records, thrust curves, Pareto frontiers, and exported `.ric` files per experiment. |
@@ -186,15 +186,15 @@ This installs all core dependencies **including** OpenMotor directly from GitHub
 
 | Package | Purpose |
 |---------|---------|
-| `numpy` ≥ 1.26 | Array operations |
-| `scipy` ≥ 1.11 | Savitzky–Golay filtering, optimization |
-| `pandas` ≥ 2.1 | Results DataFrames |
-| `matplotlib` ≥ 3.8 | Plotting |
-| `numba` ≥ 0.58 | JIT-compiled numeric kernels |
-| `torch` ≥ 2.0 | GPU tensor operations for batch filtering |
-| `streamlit` ≥ 1.28 | Interactive dashboard |
-| `pyyaml` ≥ 6.0 | YAML config parsing |
-| `optuna` ≥ 3.4 | Bayesian hyperparameter search |
+| `numpy` >= 1.26 | Array operations |
+| `scipy` >= 1.11 | Savitzky-Golay filtering, optimization |
+| `pandas` >= 2.1 | Results DataFrames |
+| `matplotlib` >= 3.8 | Plotting |
+| `numba` >= 0.58 | JIT-compiled numeric kernels |
+| `torch` >= 2.0 | GPU tensor operations for batch filtering |
+| `streamlit` >= 1.28 | Interactive dashboard |
+| `pyyaml` >= 6.0 | YAML config parsing |
+| `optuna` >= 3.4 | Bayesian hyperparameter search |
 | `openMotor` | Solid rocket motor simulation engine (installed from GitHub) |
 
 ### 4. Install the package in editable mode
@@ -233,14 +233,14 @@ experiment_name: high_thrust_kndx
 constraints:
   target_mass_kg: 0.1
   max_pressure_Pa: 4826330     # 700 psi
-  max_mass_flux: 500           # kg/(m²·s)
+  max_mass_flux: 500           # kg/(m2*s)
   grain_od_m: 0.035            # 35 mm outer diameter
   total_grains: 4
   mode: fast                   # "fast" = BATES only, "full" = BATES + Finocyl
 
 propellant:
   name: "KNDX"
-  density: 1879.0              # kg/m³
+  density: 1879.0              # kg/m3
   tabs:
     - minPressure: 100000      # Pa
       maxPressure: 10300000    # Pa
@@ -268,7 +268,7 @@ objective:
 | `constraints.total_grains` | Number of grain segments stacked in the motor. | `4` |
 | `optimizer.type` | Optimization strategy: `montecarlo`, `genetic`, or `bayesian`. | `montecarlo` |
 | `optimizer.samples` | Number of candidate geometries to generate. | `5000` |
-| `propellant.tabs` | Burn-rate tables following [St. Robert's law](https://en.wikipedia.org/wiki/Solid-propellant_rocket#Burn_rate). | See above |
+| `propellant.tabs` | Burn-rate tables following St. Robert's law. | See above |
 
 ---
 
@@ -282,14 +282,14 @@ python run_experiment.py experiments/configs/high_thrust_kndx.yaml
 
 ### What happens
 
-1. **Config is loaded** — constraints, propellant, optimizer settings parsed from YAML.
-2. **Physics-guided bounds** — `calculate_initial_bounds()` derives sensible geometric ranges using Kn rules.
-3. **Candidate generation** — Random vectors sampled within the computed bounds on CPU.
-4. **GPU filtering** — PyTorch applies vectorized geometric constraint checks, rejecting infeasible designs instantly.
-5. **OpenMotor simulation** — Surviving candidates are simulated in parallel using `multiprocessing.Pool`. Each worker assembles a full `Motor` object and runs the internal ballistics solver.
-6. **Results export** — Valid motors are saved to `experiments/results/<name>_<timestamp>/`:
-   - `motors.csv` — all valid motor profiles with performance metrics.
-   - `best_motor.ric` — the highest-performing design in OpenMotor-compatible format.
+1. **Config is loaded** - constraints, propellant, optimizer settings parsed from YAML.
+2. **Physics-guided bounds** - `calculate_initial_bounds()` derives sensible geometric ranges using Kn rules.
+3. **Candidate generation** - Random vectors sampled within the computed bounds on CPU.
+4. **GPU filtering** - PyTorch applies vectorized geometric constraint checks, rejecting infeasible designs instantly.
+5. **OpenMotor simulation** - Surviving candidates are simulated in parallel using `multiprocessing.Pool`. Each worker assembles a full `Motor` object and runs the internal ballistics solver.
+6. **Results export** - Valid motors are saved to `experiments/results/<name>_<timestamp>/`:
+   - `motors.csv` - all valid motor profiles with performance metrics.
+   - `best_motor.ric` - the highest-performing design in OpenMotor-compatible format.
 
 ### Example output
 
@@ -326,11 +326,11 @@ streamlit run openmotor_optimizer/ui/streamlit_app.py
 
 ### Dashboard features
 
-- **Experiment selector** — browse all completed runs from the sidebar
-- **KPI cards** — max peak thrust, max total impulse, max burn time, average Isp
-- **Pareto frontier plot** — total impulse vs. peak thrust, color-coded by chamber pressure
-- **Data table** — top 50 motor profiles sorted by objective
-- **`.ric` download** — one-click download of the best motor for loading into OpenMotor
+- **Experiment selector** - browse all completed runs from the sidebar
+- **KPI cards** - max peak thrust, max total impulse, max burn time, average Isp
+- **Pareto frontier plot** - total impulse vs. peak thrust, color-coded by chamber pressure
+- **Data table** - top 50 motor profiles sorted by objective
+- **`.ric` download** - one-click download of the best motor for loading into OpenMotor
 
 The dashboard automatically scans `experiments/results/` for completed runs.
 
@@ -383,10 +383,10 @@ Every valid simulation extracts the following metrics:
 | `peak_thrust_N` | N | Maximum instantaneous thrust |
 | `average_thrust_N` | N | Mean thrust over burn |
 | `burn_time_s` | s | Total burn duration |
-| `total_impulse_Ns` | N·s | Integral of thrust over time |
+| `total_impulse_Ns` | N*s | Integral of thrust over time |
 | `peak_pressure_Pa` | Pa | Maximum chamber pressure |
-| `peak_mass_flux` | kg/(m²·s) | Maximum mass flux through port |
-| `specific_impulse_s` | s | Total impulse / (propellant mass × g₀) |
+| `peak_mass_flux` | kg/(m2*s) | Maximum mass flux through port |
+| `specific_impulse_s` | s | Total impulse / (propellant mass x g0) |
 | `propellant_mass_kg` | kg | Initial propellant mass |
 
 These are defined in `openmotor_optimizer/evaluation/performance_metrics.py` as a `@dataclass`.
@@ -395,7 +395,7 @@ These are defined in `openmotor_optimizer/evaluation/performance_metrics.py` as 
 
 ## Export Format
 
-Optimized designs are exported as `.ric` files — the native JSON-based format used by OpenMotor.
+Optimized designs are exported as `.ric` files - the native JSON-based format used by OpenMotor.
 
 A generated `.ric` contains:
 - Format version
@@ -405,14 +405,14 @@ A generated `.ric` contains:
 
 To open an exported `.ric`:
 1. Launch OpenMotor
-2. **File → Open** → select the `.ric` file
+2. **File > Open** then select the `.ric` file
 3. The motor configuration loads with all grain segments, nozzle, and propellant data
 
 ---
 
 ## GPU Acceleration
 
-GPU acceleration is used for **pre-filtering only** — the actual physics simulation still runs sequentially on CPU via OpenMotor.
+GPU acceleration is used for **pre-filtering only** - the actual physics simulation still runs sequentially on CPU via OpenMotor.
 
 ### How it works
 
@@ -428,12 +428,12 @@ The system automatically detects available hardware:
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 ```
 
-If no CUDA GPU is available, filtering runs on CPU — still using PyTorch's vectorized operations for speed.
+If no CUDA GPU is available, filtering runs on CPU - still using PyTorch's vectorized operations for speed.
 
 ### Checking your GPU
 
 ```bash
-python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}, Device: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"CPU\"}')"
+python -c "import torch; print(torch.cuda.is_available())"
 ```
 
 ---
@@ -453,9 +453,11 @@ A specific motor configuration is causing a segfault in the C++ layer of OpenMot
 ### GPU not detected
 
 Verify your PyTorch installation supports CUDA:
+
 ```bash
 python -c "import torch; print(torch.cuda.is_available())"
 ```
+
 If `False`, install the CUDA-enabled version: https://pytorch.org/get-started/locally/
 
 ### `.ric` file won't open in OpenMotor
@@ -476,11 +478,10 @@ Ensure `formatVersion` in the exported file matches your OpenMotor version. The 
 
 ## License
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
 ---
 
 <p align="center">
-  <em>Built for the rocketry community — from constraints to flight-ready grain designs.</em>
+  <em>Built for the rocketry community - from constraints to flight-ready grain designs.</em>
 </p>
-]]>
